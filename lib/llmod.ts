@@ -14,15 +14,21 @@ function getClient(): OpenAI {
   return new OpenAI({ apiKey, baseURL, defaultHeaders: { "x-litellm-api-key": apiKey } });
 }
 
-/** Embed a single string and return its vector. */
-export async function embedText(input: string): Promise<number[]> {
+/** Embed a batch of strings; preserves input order. */
+export async function embedTexts(inputs: string[]): Promise<number[][]> {
   const client = getClient();
   const res = await client.embeddings.create({
     model: models.embedding,
-    input,
+    input: inputs,
     dimensions: models.embeddingDimensions,
   });
-  return res.data[0].embedding;
+  return res.data.sort((a, b) => a.index - b.index).map((d) => d.embedding);
+}
+
+/** Embed a single string and return its vector. */
+export async function embedText(input: string): Promise<number[]> {
+  const [vector] = await embedTexts([input]);
+  return vector;
 }
 
 /** Run a single chat completion with a system and user message. */

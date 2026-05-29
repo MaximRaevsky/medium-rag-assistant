@@ -29,6 +29,23 @@ export interface Chunk {
   tokenCount: number;
 }
 
+/**
+ * Metadata stored on each Pinecone vector (internal use).
+ * The API exposes only a subset (article_id, title, chunk_text, score).
+ * authors/tags are omitted at write time when empty (Pinecone rejects empty arrays).
+ */
+export interface ChunkMetadata {
+  article_id: string;
+  title: string;
+  url: string;
+  timestamp: string;
+  chunk_index: number;
+  chunk_text: string;
+  authors: string[];
+  tags: string[];
+  [key: string]: string | number | boolean | string[];
+}
+
 // ---- API contract types (field names/casing must match the PDF exactly) ----
 
 export interface PromptRequest {
