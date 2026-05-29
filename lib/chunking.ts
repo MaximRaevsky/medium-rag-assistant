@@ -2,7 +2,15 @@ import { getEncoding } from "js-tiktoken";
 import type { RagConfig } from "./config";
 import type { Article, Chunk } from "./types";
 
-// text-embedding-3-small uses the cl100k_base encoding.
+/**
+ * chunk_size definition for this project:
+ * - `chunk_size` is the maximum number of tokens in the clean article passage window.
+ * - A compact metadata header (Title, Authors, Tags) is prepended to the passage
+ *   ONLY in the embedding input, to improve retrieval for metadata-flavored queries.
+ * - The API `chunk` field exposes only the clean passage (chunkText), never the header.
+ *
+ * We use cl100k_base as a practical token-aware approximation for chunking.
+ */
 const enc = getEncoding("cl100k_base");
 
 export interface Passage {
