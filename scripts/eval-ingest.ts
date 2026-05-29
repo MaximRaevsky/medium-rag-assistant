@@ -10,15 +10,18 @@ import { embedTexts } from "../lib/llmod";
 import { chunkToMetadata, upsertRecords } from "../lib/pinecone";
 import type { Chunk, ChunkMetadata } from "../lib/types";
 import { buildSubsetIds } from "./eval-set";
+import { buildSubset2 } from "./eval2-set";
 
 /**
- * Ingest the fixed Phase 7 evaluation subset into one namespace under a given
- * chunking config. The subset (buildSubsetIds) is identical across all configs;
- * only chunkSize/overlapRatio differ per namespace.
+ * Ingest a fixed evaluation subset into one namespace under a given chunking
+ * config. The subset is identical across all configs; only chunkSize/overlapRatio
+ * differ per namespace. SUBSET_SET selects which subset:
+ *   - "base" (default): the 132-article Stage 7B subset (buildSubsetIds)
+ *   - "expanded": the Stage 7C subset (buildSubset2)
  *
- * Usage: NAMESPACE=eval_512_15 CHUNK_SIZE=512 OVERLAP=0.15 tsx scripts/eval-ingest.ts
+ * Usage: SUBSET_SET=expanded NAMESPACE=eval2_512_15 CHUNK_SIZE=512 OVERLAP=0.15 tsx scripts/eval-ingest.ts
  */
-const EMBED_BATCH = 100;
+const EMBED_BATCH = Number(process.env.EMBED_BATCH ?? 100);
 const UPSERT_BATCH = 100;
 
 function required(name: string): string {
@@ -33,7 +36,7 @@ async function main() {
   const overlapRatio = Number(required("OVERLAP"));
   const cfg: RagConfig = { chunkSize, overlapRatio, topK: 10 };
 
-  const subset = buildSubsetIds();
+  const subset = process.env.SUBSET_SET === "expanded" ? buildSubset2() : buildSubsetIds();
   console.log(`Eval ingest: namespace="${namespace}", chunkSize=${chunkSize}, overlap=${overlapRatio}`);
   console.log(`Subset size: ${subset.size} articles, model=${models.embedding}\n`);
 
