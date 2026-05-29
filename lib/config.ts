@@ -10,11 +10,11 @@ export interface RagConfig {
 /**
  * Single source of truth for RAG hyperparameters.
  * Used by ingestion, retrieval, /api/stats, and evaluation.
- * Provisional starting values; finalized after Phase 7 evaluation.
+ * Final values selected by the Phase 7 controlled evaluation (512/0.10, top_k=5).
  */
 export const ragConfig: RagConfig = {
   chunkSize: 512,
-  overlapRatio: 0.15,
+  overlapRatio: 0.1,
   topK: 5,
 };
 
