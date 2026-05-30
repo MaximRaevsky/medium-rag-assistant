@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { retrieve, dedupeByArticle, isMultiResultQuestion } from "@/lib/retrieval";
+import { retrieve, retrieveMulti, isMultiResultQuestion } from "@/lib/retrieval";
 import { SYSTEM_PROMPT, buildUserPrompt } from "@/lib/prompt";
 import { chat } from "@/lib/llmod";
 import type { PromptResponse } from "@/lib/types";
@@ -26,10 +26,12 @@ export async function POST(req: Request) {
   }
 
   const trimmed = question.trim();
-  const retrieved = await retrieve(trimmed);
+  // Multi-result/list queries use a topic-focused query + wide candidate pool +
+  // dedupe (sliced to 3, no padding). All other queries keep the original
+  // question and the configured top_k. The answer prompt always uses `trimmed`.
   const context = isMultiResultQuestion(trimmed)
-    ? dedupeByArticle(retrieved).slice(0, 3)
-    : retrieved;
+    ? (await retrieveMulti(trimmed)).slice(0, 3)
+    : await retrieve(trimmed);
 
   const system = SYSTEM_PROMPT;
   const user = buildUserPrompt(trimmed, context);
