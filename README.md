@@ -1,6 +1,6 @@
 # Medium Article RAG Assistant
 
-A retrieval-augmented generation (RAG) service that answers questions strictly from a dataset of Medium articles. It retrieves the most relevant passages from a vector database and asks an LLM to answer using only those passages. If the answer is not in the data, it returns a fixed fallback line.
+A retrieval-augmented generation (RAG) service that answers questions strictly from a dataset of Medium articles. It retrieves the most relevant passages from a vector database and asks an LLM to answer using only those passages. If the answer is not in the retrieved context, it starts with a fixed fallback line and does not answer from outside the corpus.
 
 - Live: https://medium-rag-assistant-umber.vercel.app
 - Repo: https://github.com/MaximRaevsky/medium-rag-assistant
