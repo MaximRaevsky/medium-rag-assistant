@@ -70,11 +70,11 @@ For explicit list requests (for example, "List exactly 3 articles about educatio
 - the retrieval query is reduced to the topic (for example, "articles about education") instead of the instruction-heavy phrasing;
 - a wider candidate pool (30) is fetched and deduplicated by `article_id`, then the top distinct articles are used.
 
-Other query types are unchanged. List queries also run with minimal reasoning effort, which keeps the output to titles only; all other query types use the default reasoning.
+Other query types are unchanged. List queries also run with minimal reasoning effort, which helped keep list responses concise and title-only in validation; all other query types use the default reasoning.
 
 ## Evaluation summary
 
-Hyperparameters were selected with a controlled retrieval and generation evaluation over a labeled subset (`scripts/eval2-set.ts`, `scripts/eval2-retrieval.ts`, `scripts/eval2-generate.ts`). `chunk_size=512`, `overlap_ratio=0.1`, `top_k=5` gave the best rank-aware retrieval within the assignment limits (`chunk_size ≤ 1024`, `overlap_ratio ≤ 0.3`, `top_k ≤ 30`).
+Hyperparameters were selected with a controlled retrieval and generation evaluation over a labeled subset (`scripts/eval2-set.ts`, `scripts/eval2-retrieval.ts`, `scripts/eval2-generate.ts`). `chunk_size=512`, `overlap_ratio=0.1`, `top_k=5` performed best in our validation set while staying within the assignment limits (`chunk_size ≤ 1024`, `overlap_ratio ≤ 0.3`, `top_k ≤ 30`).
 
 A final-corpus validation suite (`scripts/eval-final-set.ts`, `scripts/final-validate.ts`) covers all required query types: precise lookup, multi-result list, central-idea summary, recommendation with evidence, and fallback. The multi-result retrieval fix and its rationale are recorded in `scripts/multi-retrieval-diagnostic.ts`. The deployed endpoints were verified live against the same cases.
 
@@ -90,6 +90,8 @@ One-time data setup (requires the dataset CSV locally):
 npx tsx scripts/setup-pinecone.ts   # create/verify the Pinecone index
 npx tsx scripts/ingest.ts           # chunk, embed, and upsert into namespace "final"
 ```
+
+The dataset CSV is only required for this one-time ingestion. Once Pinecone is populated, normal runtime (the dev server and both endpoints) needs only the environment variables above.
 
 ### Environment variables
 
