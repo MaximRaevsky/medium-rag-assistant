@@ -31,15 +31,24 @@ export async function embedText(input: string): Promise<number[]> {
   return vector;
 }
 
+export type ReasoningEffort = "minimal" | "low" | "medium" | "high";
+
+export interface ChatOptions {
+  /** When set, forwarded to the model as `reasoning_effort`. Omitted -> model default. */
+  reasoningEffort?: ReasoningEffort;
+}
+
 /** Run a single chat completion with a system and user message. */
-export async function chat(system: string, user: string): Promise<string> {
+export async function chat(system: string, user: string, opts?: ChatOptions): Promise<string> {
   const client = getClient();
-  const res = await client.chat.completions.create({
+  const params = {
     model: models.chat,
     messages: [
       { role: "system", content: system },
       { role: "user", content: user },
     ],
-  });
+    ...(opts?.reasoningEffort ? { reasoning_effort: opts.reasoningEffort } : {}),
+  } as Parameters<OpenAI["chat"]["completions"]["create"]>[0];
+  const res = (await client.chat.completions.create(params)) as OpenAI.Chat.Completions.ChatCompletion;
   return res.choices[0]?.message?.content ?? "";
 }

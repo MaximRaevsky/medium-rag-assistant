@@ -26,16 +26,20 @@ export async function POST(req: Request) {
   }
 
   const trimmed = question.trim();
+  const isMulti = isMultiResultQuestion(trimmed);
   // Multi-result/list queries use a topic-focused query + wide candidate pool +
   // dedupe (sliced to 3, no padding). All other queries keep the original
   // question and the configured top_k. The answer prompt always uses `trimmed`.
-  const context = isMultiResultQuestion(trimmed)
+  const context = isMulti
     ? (await retrieveMulti(trimmed)).slice(0, 3)
     : await retrieve(trimmed);
 
   const system = SYSTEM_PROMPT;
   const user = buildUserPrompt(trimmed, context);
-  const response = await chat(system, user);
+  // Hybrid reasoning: minimal only for explicit multi-result/list queries (strict
+  // titles-only format); default reasoning for precise, summary, recommendation,
+  // and fallback queries (avoids summary false-fallback regression).
+  const response = await chat(system, user, isMulti ? { reasoningEffort: "minimal" } : undefined);
 
   const payload: PromptResponse = {
     response,
