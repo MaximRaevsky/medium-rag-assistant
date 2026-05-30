@@ -1,13 +1,11 @@
 /**
  * Final-corpus validation set (namespace `final`, full 7,682-article corpus).
  *
- * Grounded targets/pools/clusters are reused verbatim from the corpus-validated
- * Stage 7C set (scripts/eval2-set.ts); they were confirmed present by local
- * keyword search (scripts/find-eval-articles.ts) and author/title lookup
- * (scripts/show-articles.ts). This set adds:
+ * Grounded targets/pools/clusters were confirmed present in the corpus by local
+ * keyword and author/title lookups. This set adds:
  *   - a robust fallback / no-answer category, and
  *   - per-test mode (retrieval-only vs generation) and machine-checkable
- *     pass criteria, used by scripts/final-validate.ts and the cost estimate.
+ *     pass criteria, used by scripts/final-validate.ts.
  *
  * No data here triggers any paid call; it is pure test definitions.
  */

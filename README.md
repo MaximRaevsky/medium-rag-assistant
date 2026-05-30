@@ -74,9 +74,9 @@ Other query types are unchanged. List queries also run with minimal reasoning ef
 
 ## Evaluation summary
 
-Hyperparameters were selected with a controlled retrieval and generation evaluation over a labeled subset (`scripts/eval2-set.ts`, `scripts/eval2-retrieval.ts`, `scripts/eval2-generate.ts`). `chunk_size=512`, `overlap_ratio=0.1`, `top_k=5` performed best in our validation set while staying within the assignment limits (`chunk_size ≤ 1024`, `overlap_ratio ≤ 0.3`, `top_k ≤ 30`).
+Hyperparameters were selected with a controlled retrieval and generation evaluation over a labeled subset. `chunk_size=512`, `overlap_ratio=0.1`, `top_k=5` performed best in our validation set while staying within the assignment limits (`chunk_size ≤ 1024`, `overlap_ratio ≤ 0.3`, `top_k ≤ 30`).
 
-A final-corpus validation suite (`scripts/eval-final-set.ts`, `scripts/final-validate.ts`) covers all required query types: precise lookup, multi-result list, central-idea summary, recommendation with evidence, and fallback. The multi-result retrieval fix and its rationale are recorded in `scripts/multi-retrieval-diagnostic.ts`. The deployed endpoints were verified live against the same cases.
+A final-corpus validation suite (`scripts/eval-final-set.ts`, `scripts/final-validate.ts`) covers all required query types: precise lookup, multi-result list, central-idea summary, recommendation with evidence, and fallback. The multi-result retrieval handling described above is exercised by this suite, and the deployed endpoints were verified live against the same cases.
 
 ## Local development
 
