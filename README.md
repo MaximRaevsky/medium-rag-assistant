@@ -61,7 +61,7 @@ Accessed through the LLMod (LiteLLM) proxy in the OpenAI format:
 ## How it works
 
 1. Ingestion (one-time): the CSV is parsed, each article is split into ~512-token chunks (`cl100k_base`) with 10% overlap, and each chunk is embedded and upserted into Pinecone under namespace `final`. Vector ids are deterministic (`<article_id>#<chunk_index>`), so re-running is idempotent.
-2. Query: the question is embedded, the `top_k` nearest chunks are retrieved, an augmented prompt is built from those passages, and the chat model answers using only that context. Unanswerable questions return: `I don't know based on the provided Medium articles data.`
+2. Query: the question is embedded, the `top_k` nearest chunks are retrieved, an augmented prompt is built from those passages, and the chat model answers using only that context. For questions not answerable from the retrieved context, the response starts with the fixed line `I don't know based on the provided Medium articles data.` and does not answer from outside the corpus.
 
 ## Multi-result (list) queries
 
